@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABBIS · Instrumen Penelitian</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fa;--sf:#fff;--s2:#f0f2f5;--bd:#e4e7ec;
+  --tx:#111827;--t2:#6b7280;--t3:#9ca3af;
+  --bl:#2563eb;--bl-l:#eff6ff;--bl-d:#1d4ed8;
+  --gn:#16a34a;--gn-l:#f0fdf4;
+  --rd:#dc2626;--rd-l:#fef2f2;
+  --am:#d97706;--am-l:#fffbeb;
+  --pu:#7c3aed;--pu-l:#f5f3ff;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',sans-serif;
+  --r:12px;--rs:8px;
+  --sh:0 1px 3px rgba(0,0,0,.08);
+  --shm:0 4px 16px rgba(0,0,0,.08);
+  --shl:0 10px 40px rgba(0,0,0,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);
+  min-height:100vh;-webkit-font-smoothing:antialiased;}
+.scr{display:none;min-height:100vh;}
+.scr.on{display:flex;}
+.hide{display:none!important;}
+
+/* ── SHARED ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.65rem 1.1rem;border:none;border-radius:var(--rs);font-family:var(--sans);
+  font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.bw{width:100%;}
+.b-blue{background:var(--bl);color:#fff;}.b-blue:hover{background:var(--bl-d);}
+.b-ghost{background:transparent;color:var(--t2);border:1.5px solid var(--bd);}.b-ghost:hover{background:var(--s2);}
+.b-green{background:var(--gn);color:#fff;}.b-green:hover{background:#15803d;}
+.b-red{background:var(--rd);color:#fff;}.b-red:hover{background:#b91c1c;}
+.b-pu{background:var(--pu);color:#fff;}.b-pu:hover{background:#6d28d9;}
+.b-sm{padding:.4rem .8rem;font-size:.78rem;}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:2rem;box-shadow:var(--shm);}
+.fld{margin-bottom:1rem;}
+.fld label{display:block;font-size:.72rem;font-weight:500;color:var(--t2);
+  margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.05em;}
+.fld input,.fld select,.fld textarea{width:100%;padding:.6rem .85rem;
+  border:1.5px solid var(--bd);border-radius:var(--rs);background:var(--bg);
+  color:var(--tx);font-family:var(--sans);font-size:.88rem;outline:none;
+  transition:border-color .15s,box-shadow .15s;resize:vertical;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{
+  border-color:var(--bl);box-shadow:0 0 0 3px #dbeafe;background:var(--sf);}
+.topbar{background:var(--sf);border-bottom:1px solid var(--bd);
+  padding:.85rem 1.5rem;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:20;box-shadow:var(--sh);}
+.chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--bl-l);
+  color:var(--bl);border:1px solid #bfdbfe;border-radius:100px;
+  padding:.3rem .8rem;font-family:var(--mono);font-size:.68rem;font-weight:500;}
+.chip .dot{width:6px;height:6px;background:var(--bl);border-radius:50%;
+  animation:blink 1.8s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.pill{background:var(--bl);color:#fff;padding:.18rem .5rem;border-radius:4px;
+  font-size:.62rem;font-weight:700;font-family:var(--mono);}
+.stmsg{font-size:.78rem;padding:.5rem .75rem;border-radius:6px;margin-top:.5rem;}
+.st-ok{background:var(--gn-l);color:var(--gn);}
+.st-err{background:var(--rd-l);color:var(--rd);}
+
+/* ── LANDING ── */
+#s-land{flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem;gap:1.75rem;}
+.hero{text-align:center;max-width:460px;}
+.hero h1{font-size:clamp(1.9rem,5vw,2.7rem);font-weight:700;
+  letter-spacing:-.03em;line-height:1.15;margin-bottom:.6rem;}
+.hero h1 em{font-style:normal;color:var(--bl);}
+.hero p{font-size:.9rem;color:var(--t2);line-height:1.6;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;
+  max-width:560px;width:100%;}
+@media(max-width:500px){.mgrid{grid-template-columns:1fr;}}
+.mcard{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--r);
+  padding:1.6rem 1.4rem;cursor:pointer;transition:all .18s;box-shadow:var(--sh);}
+.mcard:hover{border-color:var(--bl);box-shadow:0 0 0 3px #dbeafe,var(--shm);transform:translateY(-2px);}
+.micon{width:42px;height:42px;background:var(--bl-l);border-radius:var(--rs);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:.9rem;}
+.mcard h2{font-size:.95rem;font-weight:600;margin-bottom:.35rem;}
+.mcard p{font-size:.8rem;color:var(--t2);line-height:1.5;}
+.lf{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;justify-content:center;}
+.alink{font-family:var(--mono);font-size:.68rem;color:var(--t3);
+  cursor:pointer;text-decoration:underline;}
+.alink:hover{color:var(--pu);}
+
+/* ── FORM DIRI ── */
+#s-info{flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+
+/* ── READING ── */
+#s-read{flex-direction:column;}
+.art-wrap{flex:1;max-width:720px;margin:0 auto;padding:2.5rem 1.5rem;width:100%;}
+.art-kicker{font-family:var(--mono);font-size:.65rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--bl);
+  margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+.art-kicker::before{content:'';display:inline-block;width:16px;height:2px;
+  background:var(--bl);border-radius:2px;}
+.art-wrap h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;
+  letter-spacing:-.025em;line-height:1.25;margin-bottom:1.25rem;}
+.art-body{font-size:1rem;line-height:1.9;color:#374151;}
+.art-body p{margin-bottom:1.2rem;text-align:justify;}
+.art-body p+p{text-indent:1.5rem;}
+.rfooter{background:var(--sf);border-top:1px solid var(--bd);
+  padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.rnote{font-size:.78rem;color:var(--t3);font-family:var(--mono);}
+
+/* ── OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(17,24,39,.92);
+  backdrop-filter:blur(12px);z-index:100;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1.5rem;}
+.obox{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:var(--shl);}
+.obox h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem;}
+.obox p{font-size:.83rem;color:var(--t2);line-height:1.6;margin-bottom:1.25rem;}
+.otimer{font-family:var(--mono);font-size:2.5rem;font-weight:500;
+  color:var(--bl);letter-spacing:.05em;margin-bottom:.25rem;}
+.osub{font-size:.68rem;color:var(--t3);font-family:var(--mono);}
+
+/* ── CETAK ── */
+#s-print{flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.pcard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:2rem;max-width:440px;width:100%;box-shadow:var(--shm);text-align:center;}
+.picon{width:60px;height:60px;background:var(--bl-l);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;margin:0 auto 1rem;}
+.steps{list-style:none;text-align:left;background:var(--bg);border:1px solid var(--bd);
+  border-radius:var(--rs);padding:.85rem 1rem;margin-bottom:1.25rem;counter-reset:st;}
+.steps li{counter-increment:st;display:flex;gap:.65rem;font-size:.83rem;
+  color:var(--t2);line-height:1.55;padding:.35rem 0;}
+.steps li::before{content:counter(st);min-width:1.3rem;height:1.3rem;
+  background:var(--bl);color:#fff;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;font-size:.62rem;font-weight:700;
+  flex-shrink:0;margin-top:.05rem;}
+
+/* ── SOAL ── */
+#s-q{flex-direction:column;}
+.qtop{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  position:sticky;top:0;z-index:20;box-shadow:var(--sh);height:52px;}
+.qbrand{font-family:var(--mono);font-size:.7rem;color:var(--t2);white-space:nowrap;}
+.qprog{flex:1;height:5px;background:var(--s2);border-radius:99px;overflow:hidden;}
+.qpfill{height:100%;background:var(--bl);border-radius:99px;transition:width .35s ease;}
+#q-timer{font-family:var(--mono);font-size:.9rem;font-weight:500;color:var(--tx);
+  background:var(--s2);padding:.22rem .6rem;border-radius:6px;
+  border:1px solid var(--bd);white-space:nowrap;}
+#q-timer.urg{color:var(--rd);background:var(--rd-l);border-color:#fca5a5;
+  animation:urg .6s infinite alternate;}
+@keyframes urg{from{opacity:1}to{opacity:.5}}
+.qbody{flex:1;max-width:660px;margin:0 auto;padding:2rem 1.5rem;width:100%;}
+.sec-hdr{background:var(--bl-l);border:1px solid #bfdbfe;border-radius:var(--rs);
+  padding:1rem 1.25rem;margin-bottom:1.5rem;}
+.sec-hdr .sh-tag{font-family:var(--mono);font-size:.62rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--bl);margin-bottom:.3rem;}
+.sec-hdr h3{font-size:.95rem;font-weight:700;color:var(--tx);margin-bottom:.2rem;}
+.sec-hdr p{font-size:.78rem;color:var(--t2);line-height:1.5;}
+/* Likert */
+.ltable{width:100%;border-collapse:collapse;margin-bottom:1.5rem;font-size:.82rem;}
+.ltable th{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--t2);padding:.5rem .4rem;text-align:center;
+  border-bottom:1px solid var(--bd);}
+.ltable th:first-child{text-align:left;min-width:200px;}
+.ltable td{padding:.6rem .4rem;text-align:center;border-bottom:1px solid var(--bd);vertical-align:middle;}
+.ltable td:first-child{text-align:left;font-size:.82rem;line-height:1.45;color:var(--tx);}
+.ltable tr:hover td{background:var(--bg);}
+.lrad{width:18px;height:18px;accent-color:var(--bl);cursor:pointer;}
+.rtag{font-family:var(--mono);font-size:.58rem;color:var(--am);
+  background:var(--am-l);border:1px solid #fde68a;padding:.06rem .28rem;
+  border-radius:3px;margin-left:.3rem;vertical-align:middle;}
+/* PG */
+.qlbl{font-family:var(--mono);font-size:.65rem;color:var(--bl);font-weight:500;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;}
+.qtxt{font-size:1rem;font-weight:500;line-height:1.55;color:var(--tx);
+  margin-bottom:1.25rem;letter-spacing:-.01em;}
+.opts{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem;}
+.opt{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;
+  background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);
+  cursor:pointer;font-family:var(--sans);font-size:.88rem;color:var(--tx);
+  text-align:left;transition:all .15s;}
+.opt:hover{border-color:var(--bl);background:var(--bl-l);}
+.opt.sel{border-color:var(--bl);background:var(--bl-l);}
+.okey{width:26px;height:26px;min-width:26px;background:var(--s2);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+  font-size:.7rem;font-weight:600;color:var(--t2);transition:all .15s;flex-shrink:0;}
+.opt.sel .okey{background:var(--bl);color:#fff;}
+.qnav{display:flex;gap:.6rem;justify-content:space-between;margin-top:.5rem;}
+.bn{padding:.6rem 1rem;border:1.5px solid var(--bd);border-radius:var(--rs);
+  background:var(--sf);color:var(--tx);font-family:var(--sans);
+  font-size:.8rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.bn:hover{border-color:var(--bl);color:var(--bl);}
+.bs{padding:.6rem 1.3rem;border:none;border-radius:var(--rs);background:var(--gn);
+  color:#fff;font-family:var(--sans);font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:background .15s;}
+.bs:hover{background:#15803d;}
+
+/* ── HASIL PUBLIK ── */
+#s-result{flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.rcard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:2rem;max-width:480px;width:100%;box-shadow:var(--shl);}
+.rkick{font-family:var(--mono);font-size:.65rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--t3);margin-bottom:.35rem;}
+.rcard h2{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;margin-bottom:1.25rem;}
+.swrap{display:flex;align-items:center;gap:1.25rem;padding:1.25rem;
+  background:var(--bg);border-radius:var(--rs);border:1px solid var(--bd);margin-bottom:1.1rem;}
+.sbig{font-size:3.2rem;font-weight:700;letter-spacing:-.04em;color:var(--bl);line-height:1;}
+.sverd{font-size:.95rem;font-weight:600;color:var(--tx);margin-bottom:.2rem;}
+.ssub{font-size:.78rem;color:var(--t2);}
+.mgrd{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:1rem;}
+.mbox{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:.7rem;}
+.mbl{font-size:.62rem;color:var(--t3);font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem;}
+.mbv{font-size:.95rem;font-weight:600;color:var(--tx);}
+.noticebox{background:var(--am-l);border:1px solid #fde68a;border-radius:var(--rs);
+  padding:.85rem 1rem;font-size:.8rem;color:#92400e;margin-top:1rem;line-height:1.5;}
+
+/* ── ADMIN LOGIN ── */
+#s-alog{flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+
+/* ── ADMIN PANEL ── */
+#s-adm{flex-direction:column;}
+.atop{background:#1e1b4b;padding:0 1.5rem;display:flex;align-items:center;
+  justify-content:space-between;height:54px;position:sticky;top:0;z-index:30;}
+.abrand{display:flex;align-items:center;gap:.6rem;}
+.apill{background:var(--pu);color:#fff;padding:.18rem .5rem;border-radius:4px;
+  font-family:var(--mono);font-size:.62rem;font-weight:700;}
+.aname{color:#c4b5fd;font-family:var(--mono);font-size:.72rem;}
+.abody{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 54px);}
+@media(max-width:600px){.abody{grid-template-columns:1fr;}}
+.aside{background:#1e1b4b;border-right:1px solid #312e81;padding:1rem 0;overflow-y:auto;}
+.sg{padding:0 .75rem .75rem;margin-bottom:.75rem;border-bottom:1px solid #312e81;}
+.sg:last-child{border:none;}
+.sgt{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;
+  letter-spacing:.12em;color:#7c3aed;margin-bottom:.4rem;padding:0 .25rem;}
+.sb{display:flex;align-items:center;gap:.55rem;width:100%;padding:.5rem .65rem;
+  border:none;border-radius:6px;background:transparent;color:#c4b5fd;
+  font-family:var(--sans);font-size:.8rem;cursor:pointer;transition:all .15s;text-align:left;}
+.sb:hover{background:#312e81;color:#fff;}
+.sb.on{background:#4c1d95;color:#fff;font-weight:500;}
+.amain{background:var(--bg);overflow-y:auto;}
+.atab{display:none;padding:1.75rem;}
+.atab.on{display:block;}
+.at-title{font-size:1.1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.25rem;}
+.at-sub{font-size:.8rem;color:var(--t2);margin-bottom:1.5rem;}
+
+/* Tabel respons */
+.rtbl{width:100%;border-collapse:collapse;font-size:.78rem;}
+.rtbl th{background:var(--s2);padding:.55rem .75rem;text-align:left;
+  font-weight:600;border-bottom:2px solid var(--bd);font-family:var(--mono);
+  font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);}
+.rtbl td{padding:.55rem .75rem;border-bottom:1px solid var(--bd);vertical-align:top;}
+.rtbl tr:hover td{background:var(--bl-l);}
+.bmode{display:inline-block;font-family:var(--mono);font-size:.6rem;
+  padding:.15rem .4rem;border-radius:4px;}
+.bdig{background:var(--bl-l);color:var(--bl);}
+.bprt{background:var(--am-l);color:var(--am);}
+.dbtn{padding:.28rem .55rem;font-size:.68rem;background:var(--s2);
+  border:1px solid var(--bd);border-radius:4px;cursor:pointer;font-family:var(--mono);}
+.dbtn:hover{background:var(--bl-l);border-color:var(--bl);color:var(--bl);}
+
+/* Q editor */
+.qed{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  margin-bottom:.85rem;overflow:hidden;}
+.qedh{display:flex;align-items:center;justify-content:space-between;
+  padding:.75rem 1rem;background:var(--s2);border-bottom:1px solid var(--bd);
+  cursor:pointer;user-select:none;}
+.qedh .qn{font-family:var(--mono);font-size:.68rem;font-weight:500;color:var(--bl);}
+.qedh .qpv{font-size:.8rem;color:var(--t2);flex:1;margin:0 .65rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qedb{padding:1rem;display:none;}
+.qedb.on{display:block;}
+.arow{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem;}
+.arow input[type=radio]{accent-color:var(--gn);width:14px;height:14px;
+  cursor:pointer;flex-shrink:0;}
+.arow input[type=text]{flex:1;padding:.42rem .65rem;border:1.5px solid var(--bd);
+  border-radius:6px;background:var(--bg);color:var(--tx);
+  font-family:var(--sans);font-size:.82rem;outline:none;}
+.arow input[type=text]:focus{border-color:var(--bl);}
+.arow.cor input[type=text]{border-color:var(--gn);background:var(--gn-l);}
+.albl{font-family:var(--mono);font-size:.65rem;color:var(--t3);min-width:.9rem;}
+
+/* Likert editor */
+.led{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);
+  padding:.85rem 1rem;margin-bottom:.65rem;display:flex;align-items:flex-start;gap:.75rem;}
+.ledn{font-family:var(--mono);font-size:.68rem;color:var(--bl);
+  font-weight:600;min-width:1.5rem;margin-top:.15rem;}
+.ledf{flex:1;display:flex;flex-direction:column;gap:.35rem;}
+.ledf input[type=text]{width:100%;padding:.42rem .65rem;border:1.5px solid var(--bd);
+  border-radius:6px;background:var(--bg);color:var(--tx);
+  font-family:var(--sans);font-size:.82rem;outline:none;}
+.ledf input[type=text]:focus{border-color:var(--bl);}
+.ledm{display:flex;align-items:center;gap:.6rem;font-size:.72rem;color:var(--t2);}
+.ledm label{display:flex;align-items:center;gap:.3rem;cursor:pointer;}
+.ledm input{accent-color:var(--am);}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(17,24,39,.7);
+  backdrop-filter:blur(4px);z-index:200;display:flex;
+  align-items:center;justify-content:center;padding:1rem;}
+.mbox2{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:1.75rem;max-width:700px;width:100%;max-height:90vh;
+  overflow-y:auto;box-shadow:var(--shl);}
+.mcls{float:right;background:var(--s2);border:1px solid var(--bd);
+  border-radius:6px;padding:.3rem .6rem;cursor:pointer;font-family:var(--mono);font-size:.7rem;}
+.sbrkd{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:.55rem;margin:1rem 0;}
+.sbi{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:.65rem;}
+.sbi .sbl{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--t3);margin-bottom:.2rem;}
+.sbi .sbv{font-size:1.1rem;font-weight:700;color:var(--tx);}
+.lrow{display:flex;justify-content:space-between;align-items:center;
+  padding:.45rem .65rem;border-radius:6px;margin-bottom:.3rem;font-size:.8rem;}
+.lrow:nth-child(odd){background:var(--bg);}
+.lsc{font-family:var(--mono);font-weight:600;color:var(--bl);}
+
+/* Export */
+.expre{background:#0f172a;border-radius:var(--rs);padding:1.1rem;
+  font-family:var(--mono);font-size:.7rem;color:#94a3b8;line-height:1.6;
+  max-height:260px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;margin-bottom:.85rem;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════ LANDING ════ -->
+<div id="s-land" class="scr on">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:2rem;gap:1.75rem;min-height:100vh;width:100%;">
+    <div class="chip"><span class="dot"></span>ABBIS · OPSI 2026 · SMAN 5 Yogyakarta</div>
+    <div class="hero">
+      <h1>Instrumen<br><em>Penelitian</em></h1>
+      <p>Perbandingan Pemahaman Membaca pada Media Cetak dan Media Digital</p>
+    </div>
+    <div class="mgrid">
+      <div class="mcard" onclick="selMode('digital')">
+        <div class="micon">🖥️</div>
+        <h2>Kelompok Digital</h2>
+        <p>Baca teks di layar, lalu isi instrumen sepenuhnya secara digital.</p>
+      </div>
+      <div class="mcard" onclick="selMode('print')">
+        <div class="micon">📄</div>
+        <h2>Kelompok Cetak</h2>
+        <p>Baca teks dari kertas yang diberikan peneliti, lalu isi instrumen ini.</p>
+      </div>
+    </div>
+    <div class="lf">
+      <span style="font-family:var(--mono);font-size:.68rem;color:var(--t3);">
+        ℹ️ Pilih sesuai instruksi peneliti</span>
+      <span class="alink" onclick="goTo('s-alog')">🔐 Admin Panel</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ DATA DIRI ════ -->
+<div id="s-info" class="scr">
+  <div class="card" style="max-width:440px;width:100%;margin:2rem auto;">
+    <div style="margin-bottom:1.25rem;">
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--t3);
+        text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;">Bagian A</div>
+      <div style="font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.25rem;">
+        Data Diri Responden</div>
+      <div style="font-size:.78rem;color:var(--t2);font-family:var(--mono);">
+        Isi dengan lengkap · Semua data anonim</div>
+    </div>
+    <div class="fld"><label>Nama Lengkap</label>
+      <input type="text" id="i-name" placeholder="Nama lengkap..."></div>
+    <div class="fld"><label>Kelas</label>
+      <input type="text" id="i-kelas" placeholder="Contoh: XI IPA 2"></div>
+    <div class="fld"><label>No. Absen</label>
+      <input type="text" id="i-absen" placeholder="Nomor absen"></div>
+    <div class="fld"><label>Jenis Kelamin</label>
+      <select id="i-gender">
+        <option value="">— Pilih —</option>
+        <option>Laki-laki</option><option>Perempuan</option>
+      </select>
+    </div>
+    <button class="btn b-blue bw" onclick="startFlow()">Lanjut →</button>
+    <button class="btn b-ghost bw" style="margin-top:.5rem;" onclick="goTo('s-land')">← Kembali</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ BACA DIGITAL ════ -->
+<div id="s-read" class="scr">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <span class="pill">BAGIAN B</span>
+      <span style="font-family:var(--mono);font-size:.7rem;color:var(--t2);">
+        Baca Teks · Kelompok Digital</span>
+    </div>
+    <span style="font-family:var(--mono);font-size:.72rem;color:var(--t3);">
+      Baca satu kali · Jangan membuat catatan</span>
+  </div>
+  <div class="art-wrap">
+    <div class="art-kicker">Teks Bacaan · ABBIS v3</div>
+    <h1 id="art-title"></h1>
+    <div class="art-body" id="art-body"></div>
+  </div>
+  <div class="rfooter">
+    <span class="rnote">⚠ Setelah klik Selesai, teks tidak bisa dibuka kembali.</span>
+    <button class="btn b-blue" onclick="showConfirmRead()">Selesai Membaca →</button>
+  </div>
+</div>
+
+<!-- Overlay Konfirmasi Selesai Baca -->
+<div id="ov-confirm" class="hide">
+  <div class="overlay">
+    <div class="obox">
+      <h3>Sudah selesai membaca?</h3>
+      <p>Setelah konfirmasi, kamu tidak dapat kembali ke teks. Pastikan sudah membaca seluruh teks.</p>
+      <div style="display:flex;gap:.6rem;flex-direction:column;">
+        <button class="btn b-blue bw" onclick="finishRead()">Ya, Lanjut ke Soal →</button>
+        <button class="btn b-ghost bw" onclick="hideEl('ov-confirm')">Belum, Kembali Membaca</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ CETAK ════ -->
+<div id="s-print" class="scr">
+  <div class="pcard">
+    <div class="picon">📋</div>
+    <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:1rem;">Kelompok Cetak</h2>
+    <ol class="steps">
+      <li>Terima lembar teks cetak dari peneliti.</li>
+      <li>Baca teks satu kali dengan saksama. Jangan membuat catatan.</li>
+      <li>Setelah selesai, <strong>kembalikan lembar ke peneliti</strong>.</li>
+      <li>Tekan tombol di bawah → tunggu timer → mulai soal.</li>
+    </ol>
+    <button class="btn b-blue bw" onclick="showPrintLock()">Saya Sudah Selesai Membaca →</button>
+    <button class="btn b-ghost bw" style="margin-top:.5rem;" onclick="goTo('s-land')">← Kembali</button>
+  </div>
+</div>
+
+<!-- Overlay Kunci Layar Cetak -->
+<div id="ov-lock" class="hide">
+  <div class="overlay">
+    <div class="obox">
+      <div style="font-size:2.5rem;margin-bottom:.75rem;">🔒</div>
+      <h3>Kembalikan Lembar Cetak</h3>
+      <p>Pastikan lembar teks sudah dikembalikan ke peneliti. Layar dikunci sementara.</p>
+      <div class="otimer" id="lock-timer">00:10</div>
+      <div class="osub">Tunggu sebelum tombol aktif</div>
+      <button class="btn b-blue bw" id="btn-unlock" onclick="unlockPrint()"
+        style="margin-top:1rem;" disabled>Lembar Sudah Dikembalikan →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ SOAL ════ -->
+<div id="s-q" class="scr">
+  <div class="qtop">
+    <span class="qbrand">ABBIS · <span id="q-sec-lbl">Bagian C</span></span>
+    <div class="qprog"><div class="qpfill" id="q-prog" style="width:0%"></div></div>
+    <div id="q-timer" class="hide">00:00</div>
+    <span style="font-family:var(--mono);font-size:.7rem;color:var(--t2);white-space:nowrap;"
+      id="q-step"></span>
+  </div>
+  <div class="qbody" id="q-wrap"></div>
+</div>
+
+<!-- ════════════════════════════════ HASIL PUBLIK ════ -->
+<div id="s-result" class="scr">
+  <div class="rcard">
+    <p class="rkick">Instrumen Selesai · ABBIS OPSI 2026</p>
+    <h2 id="r-head">—</h2>
+    <div class="swrap">
+      <div class="sbig" id="r-score">—</div>
+      <div>
+        <div class="sverd" id="r-verd">—</div>
+        <div class="ssub" id="r-sub">dari 15 soal · Bagian C</div>
+      </div>
+    </div>
+    <div class="mgrd">
+      <div class="mbox"><div class="mbl">Nama</div><div class="mbv" id="r-name">—</div></div>
+      <div class="mbox"><div class="mbl">Kelas</div><div class="mbv" id="r-kls">—</div></div>
+      <div class="mbox"><div class="mbl">Media</div><div class="mbv" id="r-mode">—</div></div>
+      <div class="mbox"><div class="mbl">Skor Bag. D</div><div class="mbv" id="r-d">—</div></div>
+    </div>
+    <div class="noticebox">
+      📊 Data lengkap (skala E, F, G & analisis per bagian) tersedia di
+      <strong>Admin Panel</strong>. Tunjukkan layar ini kepada peneliti.
+    </div>
+    <button class="btn b-blue bw" style="margin-top:1rem;" onclick="restart()">
+      Selesai / Mulai Ulang</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ ADMIN LOGIN ════ -->
+<div id="s-alog" class="scr">
+  <div class="card" style="max-width:360px;width:100%;margin:2rem auto;">
+    <div style="display:inline-flex;align-items:center;gap:.4rem;background:var(--pu-l);
+      color:var(--pu);border:1px solid #ddd6fe;border-radius:100px;
+      padding:.28rem .75rem;font-family:var(--mono);font-size:.68rem;
+      font-weight:500;margin-bottom:1rem;">🔐 Admin Panel</div>
+    <div style="font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.3rem;">
+      Masuk sebagai Admin</div>
+    <p style="font-size:.8rem;color:var(--t2);margin-bottom:1.2rem;">
+      Akses terbatas untuk peneliti ABBIS.</p>
+    <div id="log-err" class="stmsg st-err hide">Password salah.</div>
+    <div class="fld" style="margin-top:.5rem;">
+      <label>Password Admin</label>
+      <input type="password" id="a-pw" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn b-pu bw" onclick="doLogin()">Masuk →</button>
+    <button class="btn b-ghost bw" style="margin-top:.5rem;" onclick="goTo('s-land')">← Kembali</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ ADMIN PANEL ════ -->
+<div id="s-adm" class="scr">
+  <div class="atop">
+    <div class="abrand">
+      <span class="apill">ADMIN</span>
+      <span class="aname">ABBIS · Panel Kontrol</span>
+    </div>
+    <button class="btn b-sm" style="background:#312e81;color:#c4b5fd;
+      border:1px solid #4c1d95;" onclick="goTo('s-land')">← Keluar</button>
+  </div>
+  <div class="abody">
+    <!-- Sidebar -->
+    <div class="aside">
+      <div class="sg">
+        <div class="sgt">Data</div>
+        <button class="sb on" id="sb-resp" onclick="swTab('t-resp')">📊 Respons</button>
+      </div>
+      <div class="sg">
+        <div class="sgt">Editor</div>
+        <button class="sb" id="sb-art" onclick="swTab('t-art')">📝 Teks Bacaan</button>
+        <button class="sb" id="sb-qc" onclick="swTab('t-qc')">❓ Soal C (PG)</button>
+        <button class="sb" id="sb-qd" onclick="swTab('t-qd')">🗂 Soal D</button>
+        <button class="sb" id="sb-lik" onclick="swTab('t-lik')">📋 Skala E/F/G</button>
+      </div>
+      <div class="sg">
+        <div class="sgt">Konfigurasi</div>
+        <button class="sb" id="sb-set" onclick="swTab('t-set')">⚙️ Pengaturan</button>
+        <button class="sb" id="sb-exp" onclick="swTab('t-exp')">📤 Ekspor</button>
+      </div>
+    </div>
+    <!-- Main -->
+    <div class="amain">
+
+      <!-- TAB: RESPONS -->
+      <div class="atab on" id="t-resp">
+        <div class="at-title">Data Respons</div>
+        <div class="at-sub">Data tersimpan di Supabase. Klik Detail untuk lihat jawaban lengkap.</div>
+        <div style="display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+          <button class="btn b-blue b-sm" onclick="loadResp()">🔄 Refresh</button>
+          <button class="btn b-sm b-green" onclick="dlCSV()">⬇️ Download CSV</button>
+          <button class="btn b-sm b-red" onclick="clearAll()">🗑 Hapus Semua</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="rtbl" id="rtbl">
+            <thead><tr>
+              <th>#</th><th>Nama</th><th>Kelas</th><th>Media</th>
+              <th>C.1</th><th>C.2</th><th>C.3</th><th>D</th><th>Total C</th>
+              <th>E</th><th>F</th><th>G</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="rtbody"></tbody>
+          </table>
+        </div>
+        <div id="no-resp" style="text-align:center;padding:2rem;color:var(--t3);
+          font-family:var(--mono);font-size:.8rem;">Belum ada data respons.</div>
+      </div>
+
+      <!-- TAB: ARTIKEL -->
+      <div class="atab" id="t-art">
+        <div class="at-title">Editor Teks Bacaan</div>
+        <div class="at-sub">Teks yang dibaca responden pada Bagian B.</div>
+        <div class="card">
+          <div class="fld"><label>Judul Teks</label>
+            <input type="text" id="ed-title"></div>
+          <div class="fld"><label>Isi Teks (pakai tag &lt;p&gt;)</label>
+            <textarea id="ed-body" rows="16"></textarea></div>
+          <button class="btn b-blue b-sm" onclick="saveArt()">💾 Simpan</button>
+          <div id="art-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+        </div>
+      </div>
+
+      <!-- TAB: SOAL C -->
+      <div class="atab" id="t-qc">
+        <div class="at-title">Editor Soal Bagian C</div>
+        <div class="at-sub">Soal pilihan ganda (C.1 Surface · C.2 Textbase · C.3 Situation Model)</div>
+        <div id="qc-list"></div>
+        <button class="btn b-blue b-sm" onclick="saveQC()">💾 Simpan Soal C</button>
+        <div id="qc-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+      </div>
+
+      <!-- TAB: SOAL D -->
+      <div class="atab" id="t-qd">
+        <div class="at-title">Editor Soal Bagian D</div>
+        <div class="at-sub">Soal rekonstruksi urutan & memori lokasi paragraf.</div>
+        <div id="qd-list"></div>
+        <button class="btn b-blue b-sm" onclick="saveQD()">💾 Simpan Soal D</button>
+        <div id="qd-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+      </div>
+
+      <!-- TAB: SKALA -->
+      <div class="atab" id="t-lik">
+        <div class="at-title">Editor Skala E / F / G</div>
+        <div class="at-sub">Klik bagian untuk expand. Centang R untuk item reverse-scored.</div>
+        <div id="lik-ed"></div>
+        <button class="btn b-blue b-sm" onclick="saveLik()">💾 Simpan Skala</button>
+        <div id="lik-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+      </div>
+
+      <!-- TAB: PENGATURAN -->
+      <div class="atab" id="t-set">
+        <div class="at-title">Pengaturan</div>
+        <div class="at-sub">Konfigurasi waktu & password admin.</div>
+        <div class="card" style="margin-bottom:1rem;">
+          <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.85rem;">
+            ⏱ Waktu Pengerjaan Soal</h3>
+          <div class="fld"><label>Waktu per soal C & D (detik, 0 = tanpa batas)</label>
+            <input type="number" id="set-qt" value="0" min="0" max="300"></div>
+          <div class="fld"><label>Waktu kunci layar cetak (detik, min 5)</label>
+            <input type="number" id="set-lt" value="10" min="5" max="60"></div>
+          <button class="btn b-blue b-sm" onclick="saveCFG()">💾 Simpan</button>
+          <div id="set-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.85rem;">
+            🔐 Ganti Password Admin</h3>
+          <div class="fld"><label>Password Lama</label>
+            <input type="password" id="pw-o" placeholder="••••••••"></div>
+          <div class="fld"><label>Password Baru</label>
+            <input type="password" id="pw-n" placeholder="••••••••"></div>
+          <div class="fld"><label>Konfirmasi</label>
+            <input type="password" id="pw-c" placeholder="••••••••"></div>
+          <button class="btn b-pu b-sm" onclick="changePw()">Ganti Password</button>
+          <div id="pw-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+        </div>
+      </div>
+
+      <!-- TAB: EKSPOR -->
+      <div class="atab" id="t-exp">
+        <div class="at-title">Ekspor Konfigurasi</div>
+        <div class="at-sub">Download soal & teks sebagai JSON untuk backup atau restore.</div>
+        <div class="card" style="margin-bottom:1rem;">
+          <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.85rem;">📤 Export JSON</h3>
+          <div class="expre" id="exp-pre">Klik Generate...</div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+            <button class="btn b-blue b-sm" onclick="genExp()">🔄 Generate</button>
+            <button class="btn b-sm b-green" onclick="dlCfg()">⬇️ Download</button>
+            <button class="btn b-sm b-pu" onclick="cpyCfg()">📋 Copy</button>
+          </div>
+          <div id="exp-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.85rem;">📥 Import JSON</h3>
+          <div class="fld"><label>Paste JSON</label>
+            <textarea id="imp-json" rows="5" placeholder='{"article":...}'></textarea></div>
+          <button class="btn b-sm" style="background:var(--am);color:#fff;"
+            onclick="impCfg()">Import & Terapkan</button>
+          <div id="imp-st" class="stmsg hide" style="margin-top:.5rem;"></div>
+        </div>
+      </div>
+
+    </div><!-- /amain -->
+  </div><!-- /abody -->
+</div><!-- /s-adm -->
+
+<!-- Modal Detail -->
+<div id="modal" class="modal hide">
+  <div class="mbox2">
+    <button class="mcls" onclick="hideEl('modal')">✕ Tutup</button>
+    <div id="modal-cnt"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// ① KONFIGURASI — ISI SEBELUM UPLOAD
+// ════════════════════════════════════════════════════════════════
+const SB_URL  = "PASTE_SUPABASE_URL_DI_SINI";       // https://xxx.supabase.co
+const SB_ANON = "PASTE_ANON_KEY_DI_SINI";           // untuk insert (publik)
+const SB_SVC  = "PASTE_SERVICE_ROLE_KEY_DI_SINI";   // untuk admin read/delete
+
+// ════════════════════════════════════════════════════════════════
+// ② SUPABASE HELPER
+// ════════════════════════════════════════════════════════════════
+async function sb(path, opts={}, svc=false){
+  const key = svc ? SB_SVC : SB_ANON;
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`,{
+    ...opts,
+    headers:{
+      'Content-Type':'application/json',
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
+      'Prefer': opts.prefer||'',
+      ...(opts.headers||{})
+    }
+  });
+  if(!res.ok) throw new Error(await res.text());
+  const t = await res.text();
+  return t ? JSON.parse(t) : null;
+}
+
+// ════════════════════════════════════════════════════════════════
+// ③ DATA DEFAULT INSTRUMEN
+// ════════════════════════════════════════════════════════════════
+let ARTICLE = {
+  title:"Krisis Air Bersih di Balik Perubahan Iklim Global",
+  body:`<p>Perubahan iklim bukan lagi sekadar isu masa depan yang abstrak. Dampaknya telah terasa secara nyata di berbagai penjuru dunia, termasuk di Indonesia. Salah satu dampak yang paling mengancam kehidupan manusia namun sering kali luput dari perhatian adalah krisis air bersih. Ketika suhu bumi terus meningkat dan pola curah hujan berubah secara drastis, ketersediaan air bersih yang selama ini dianggap tidak terbatas mulai menunjukkan tanda-tanda kepunahan.</p>
+<p>Para ilmuwan menjelaskan bahwa perubahan iklim memengaruhi siklus air di bumi melalui beberapa mekanisme sekaligus. Pertama, peningkatan suhu rata-rata permukaan bumi mempercepat proses penguapan air dari danau, sungai, dan tanah. Air yang menguap lebih cepat dari biasanya menyebabkan permukaan air tanah turun dan cadangan air di waduk berkurang. Kedua, perubahan pola curah hujan membuat sebagian wilayah mengalami kekeringan berkepanjangan, sementara wilayah lain justru diterjang banjir yang tidak dapat diserap tanah karena intensitasnya terlalu tinggi dalam waktu singkat.</p>
+<p>Fenomena mencairnya lapisan es dan gletser di kutub serta pegunungan tinggi juga memberikan kontribusi ganda terhadap krisis air. Dalam jangka pendek, pencairan es memang menambah volume air di sungai-sungai yang bersumber dari gletser. Namun dalam jangka panjang, ketika gletser habis meleleh, sumber air permanen tersebut akan lenyap selamanya. Lebih dari dua miliar orang di dunia bergantung pada air dari gletser dan salju pegunungan sebagai sumber utama air minum dan irigasi pertanian mereka.</p>
+<p>Di Indonesia, dampak perubahan iklim terhadap ketersediaan air bersih sudah mulai terasa di beberapa daerah. Penelitian yang dilakukan oleh Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) menunjukkan bahwa musim kemarau di Indonesia cenderung semakin panjang dan intensitas curah hujan pada musim penghujan semakin tidak merata. Wilayah seperti Nusa Tenggara Timur (NTT) dan sebagian Jawa Tengah telah mengalami kekeringan parah yang memaksa warga berjalan bermil-mil untuk mendapatkan air bersih.</p>
+<p>Kualitas air pun tidak luput dari dampak perubahan iklim. Suhu air yang lebih hangat memicu pertumbuhan alga berbahaya secara masif dalam fenomena yang dikenal sebagai harmful algal bloom. Alga ini menghasilkan racun yang berbahaya bagi manusia dan hewan. Banjir yang semakin sering terjadi juga membawa sedimen, pestisida, dan limbah industri ke sumber-sumber air minum, meningkatkan risiko penyebaran penyakit seperti kolera, diare, dan tifus.</p>
+<p>Para ahli lingkungan menekankan bahwa krisis air bersih dan perubahan iklim adalah dua sisi dari mata uang yang sama. Mengatasi satu masalah tanpa menyelesaikan yang lain tidak akan memberikan solusi yang berkelanjutan. Oleh karena itu, berbagai negara mulai mengembangkan strategi adaptasi ganda, yaitu mengurangi emisi gas rumah kaca sekaligus membangun sistem pengelolaan air yang lebih tangguh dan efisien.</p>
+<p>Di tingkat global, beberapa solusi inovatif telah mulai diterapkan. Teknologi pemanenan air hujan memungkinkan rumah tangga dan komunitas menyimpan air hujan untuk digunakan di musim kering. Sistem desalinasi, yaitu proses mengubah air laut menjadi air tawar, semakin berkembang meski masih membutuhkan energi yang besar. Pendekatan berbasis alam seperti restorasi hutan dan pelestarian daerah aliran sungai (DAS) terbukti efektif menjaga kapasitas penyerapan air tanah.</p>
+<p>Namun solusi teknis saja tidak cukup. Perubahan perilaku dan kesadaran masyarakat memainkan peran yang sama pentingnya. Penggunaan air yang boros, pencemaran sungai oleh sampah dan limbah, serta alih fungsi lahan adalah masalah yang hanya bisa diselesaikan melalui pendidikan, regulasi, dan perubahan budaya secara menyeluruh.</p>
+<p>Krisis air bersih akibat perubahan iklim adalah peringatan keras bahwa sumber daya alam bumi memiliki batas. Memahami ancaman ini bukan untuk menimbulkan kepanikan, tetapi untuk mendorong tindakan nyata dari pemerintah, industri, maupun setiap individu, sebelum krisis berubah menjadi bencana yang tidak dapat dibalikkan.</p>`
+};
+
+let QC=[
+  {sec:'C.1',q:"Menurut teks, proses apa yang dipercepat oleh peningkatan suhu rata-rata permukaan bumi?",opts:["Pertumbuhan alga berbahaya","Proses penguapan air dari danau, sungai, dan tanah","Pencairan lapisan es di kutub","Penurunan permukaan tanah di kota pesisir"],ans:1},
+  {sec:'C.1',q:"Apa yang dimaksud dengan 'harmful algal bloom' dalam teks?",opts:["Banjir yang membawa sedimen berbahaya","Pertumbuhan ikan secara masif di air hangat","Pertumbuhan alga berbahaya secara masif akibat suhu air yang lebih hangat","Pencemaran air oleh limbah industri"],ans:2},
+  {sec:'C.1',q:"Berapa banyak orang di dunia yang bergantung pada air dari gletser dan salju pegunungan?",opts:["Lebih dari satu miliar","Lebih dari dua miliar","Lebih dari tiga miliar","Kurang dari satu miliar"],ans:1},
+  {sec:'C.1',q:"Lembaga mana yang melakukan penelitian tentang dampak perubahan iklim terhadap ketersediaan air di Indonesia?",opts:["Kementerian Lingkungan Hidup","LIPI","BMKG","Bappenas"],ans:2},
+  {sec:'C.1',q:"Penyakit apa yang disebutkan sebagai risiko akibat banjir yang membawa limbah ke sumber air minum?",opts:["Malaria, demam berdarah, dan diare","Kolera, diare, dan tifus","Disentri, kolera, dan malaria","Tifus, hepatitis, dan disentri"],ans:1},
+  {sec:'C.2',q:"Apa gagasan utama paragraf kedua dalam teks?",opts:["Perubahan iklim menyebabkan banjir dan kekeringan bersamaan","Mekanisme bagaimana perubahan iklim memengaruhi siklus air","Pentingnya teknologi dalam mengatasi kekurangan air","Dampak penguapan air terhadap pertanian"],ans:1},
+  {sec:'C.2',q:"Manakah pernyataan yang paling tepat merangkum isi paragraf tentang gletser?",opts:["Pencairan gletser hanya berdampak negatif","Gletser mencair memberi manfaat jangka pendek tapi mengancam jangka panjang","Gletser adalah sumber air utama seluruh penduduk dunia","Pencairan gletser tidak berkaitan dengan perubahan iklim"],ans:1},
+  {sec:'C.2',q:"Apa tema utama yang menghubungkan seluruh isi teks?",opts:["Teknologi desalinasi sebagai solusi krisis air","Peran Indonesia dalam mengatasi perubahan iklim global","Hubungan antara perubahan iklim dan ancaman terhadap ketersediaan air bersih","Pentingnya kesadaran individu dalam menjaga lingkungan"],ans:2},
+  {sec:'C.2',q:"Apa yang dimaksud penulis dengan 'strategi adaptasi ganda'?",opts:["Menggunakan dua jenis teknologi pengelolaan air","Mengurangi emisi gas rumah kaca sekaligus membangun pengelolaan air yang tangguh","Membangun sistem banjir dan kekeringan bersamaan","Melibatkan dua negara dalam kerja sama lingkungan"],ans:1},
+  {sec:'C.2',q:"Bagaimana hubungan paragraf 'kualitas air' dengan paragraf sebelumnya tentang 'ketersediaan air'?",opts:["Keduanya membahas masalah yang tidak berkaitan","Paragraf kualitas air membantah argumen sebelumnya","Paragraf kualitas air memperluas dampak perubahan iklim pada mutu air","Keduanya membahas solusi yang sama"],ans:2},
+  {sec:'C.3',q:"Mengapa penulis menyebut krisis air dan perubahan iklim sebagai 'dua sisi dari mata uang yang sama'?",opts:["Karena keduanya sama-sama mahal diatasi","Karena keduanya disebabkan faktor manusia dan hanya bisa diselesaikan bersamaan","Karena keduanya terjadi di negara yang sama","Karena keduanya baru muncul dalam beberapa dekade terakhir"],ans:1},
+  {sec:'C.3',q:"Mengapa solusi teknis saja dinilai tidak cukup untuk mengatasi krisis air?",opts:["Karena teknologi belum cukup canggih","Karena masalah perilaku manusia tidak bisa diselesaikan hanya dengan teknologi","Karena biaya teknologi terlalu mahal","Karena pemerintah tidak mendukung teknologi baru"],ans:1},
+  {sec:'C.3',q:"Jika gletser di seluruh dunia habis meleleh, apa yang paling mungkin terjadi berdasarkan teks?",opts:["Volume air laut berkurang drastis","Lebih dari dua miliar orang kehilangan sumber air utama","Proses penguapan melambat","Alga berbahaya berkurang karena suhu lebih dingin"],ans:1},
+  {sec:'C.3',q:"Mengapa restorasi hutan disebut efektif untuk mengatasi krisis air?",opts:["Hutan menghasilkan air hujan langsung","Hutan menjaga kapasitas penyerapan air tanah secara alami","Hutan mendinginkan suhu bumi sehingga mencegah penguapan","Hutan menghalangi banjir dengan menyerap seluruh curah hujan"],ans:1},
+  {sec:'C.3',q:"Apa yang dapat disimpulkan tentang sikap penulis terhadap isu krisis air?",opts:["Penulis pesimis dan menyatakan krisis tidak bisa diatasi","Penulis netral dan hanya menyajikan fakta","Penulis optimis berlebihan","Penulis realistis dan mendorong tindakan nyata tanpa menimbulkan kepanikan"],ans:3}
+];
+
+let QD=[
+  {q:"Di paragraf mana teks pertama kali menjelaskan peningkatan suhu mempercepat penguapan air dari danau, sungai, dan tanah?",opts:["Paragraf 1","Paragraf 2","Paragraf 3","Paragraf 4"],ans:1},
+  {q:"Di paragraf mana teks pertama kali menyebutkan pencairan gletser memberikan dampak ganda (jangka pendek & panjang)?",opts:["Paragraf 2","Paragraf 3","Paragraf 4","Paragraf 5"],ans:1},
+  {q:"Di paragraf mana teks pertama kali menyebut lebih dari dua miliar orang bergantung pada air dari gletser?",opts:["Paragraf 2","Paragraf 3","Paragraf 4","Paragraf 5"],ans:1},
+  {q:"Di paragraf mana teks pertama kali menyebut NTT dan Jawa Tengah sebagai daerah yang mengalami kekeringan parah?",opts:["Paragraf 2","Paragraf 3","Paragraf 4","Paragraf 5"],ans:2},
+  {q:"Di paragraf mana teks pertama kali menjelaskan fenomena harmful algal bloom?",opts:["Paragraf 3","Paragraf 4","Paragraf 5","Paragraf 6"],ans:2},
+  {q:"Di paragraf mana teks pertama kali menyatakan krisis air dan perubahan iklim adalah 'dua sisi dari mata uang yang sama'?",opts:["Paragraf 4","Paragraf 5","Paragraf 6","Paragraf 7"],ans:2},
+  {q:"Di paragraf mana teks pertama kali menyebutkan teknologi desalinasi sebagai solusi?",opts:["Paragraf 5","Paragraf 6","Paragraf 7","Paragraf 8"],ans:2},
+  {q:"Di paragraf mana teks pertama kali menegaskan perubahan perilaku sama pentingnya dengan solusi teknis?",opts:["Paragraf 6","Paragraf 7","Paragraf 8","Paragraf 9"],ans:2}
+];
+
+let LIKERT={
+  E:{title:"Bagian E — Skala Beban Kognitif",
+     desc:"Berikan tanda pada kolom yang paling menggambarkan pengalamanmu SELAMA membaca teks.",
+     theory:"Sweller et al. (2019) — Cognitive Load Theory",
+     items:[
+       {t:"Saya dapat berkonsentrasi penuh dari awal hingga akhir membaca teks ini.",r:false},
+       {t:"Saya merasa proses membaca teks ini membutuhkan usaha mental yang besar.",r:true},
+       {t:"Saya sering merasa pikiran saya teralihkan ke hal lain saat membaca.",r:true},
+       {t:"Saya merasa lelah secara mental setelah selesai membaca teks ini.",r:true},
+       {t:"Saya merasa perlu membaca ulang beberapa bagian karena gagal memahaminya.",r:true},
+       {t:"Saya merasa media yang saya gunakan memudahkan proses membaca.",r:false},
+       {t:"Saya merasa penggunaan media ini menguras energi saya secara tidak perlu.",r:true},
+       {t:"Saya merasa mata saya terasa lelah atau tidak nyaman setelah membaca.",r:true},
+       {t:"Saya dapat memproses informasi dalam teks tanpa harus berhenti lama di suatu bagian.",r:false},
+       {t:"Saya merasa cara penyajian teks di media yang saya gunakan menambah beban pikiran.",r:true}
+     ]},
+  F:{title:"Bagian F — Skala Memori Spasial & Stabilitas Teks",
+     desc:"Berikan tanda berdasarkan pengalamanmu setelah selesai membaca.",
+     theory:"Mangen & van der Weel (2016); Singer & Alexander (2017)",
+     items:[
+       {t:"Saya dapat mengingat kira-kira di bagian mana suatu informasi penting berada dalam teks.",r:false},
+       {t:"Saya merasa sulit untuk mengingat posisi/lokasi informasi tertentu dalam teks.",r:true},
+       {t:"Saya memiliki gambaran mental yang jelas tentang bagaimana isi teks tersusun dari awal hingga akhir.",r:false},
+       {t:"Saya merasa mudah 'kembali' secara mental ke bagian tertentu dalam teks untuk mengingat ulang isinya.",r:false},
+       {t:"Saya kesulitan membayangkan struktur atau urutan informasi dalam teks setelah selesai membaca.",r:true},
+       {t:"Saya merasa ada 'peta' dalam pikiran saya tentang di mana setiap informasi penting berada.",r:false},
+       {t:"Saya merasa informasi dalam teks terasa 'mengalir' tanpa batas sehingga sulit saya petakan letaknya.",r:true},
+       {t:"Saya dapat dengan mudah mengingat urutan kejadian atau argumen yang disampaikan penulis.",r:false}
+     ]},
+  G:{title:"Bagian G — Skala Pengalaman Membaca Umum",
+     desc:"Berikan tanda berdasarkan pengalaman keseluruhanmu membaca teks.",
+     theory:"Mangen et al. (2013); Clinton (2019)",
+     items:[
+       {t:"Secara keseluruhan, saya menikmati proses membaca teks ini.",r:false},
+       {t:"Saya merasa media yang saya gunakan mendukung pemahaman saya terhadap teks.",r:false},
+       {t:"Saya merasa nyaman membaca dengan media ini dalam waktu yang lama.",r:false},
+       {t:"Saya merasa puas dengan kualitas pemahaman yang saya capai setelah membaca teks ini.",r:false},
+       {t:"Saya lebih suka menggunakan media ini dibandingkan media lainnya untuk membaca teks panjang.",r:false},
+       {t:"Jika diberikan pilihan, saya akan memilih media yang sama untuk membaca materi pelajaran.",r:false}
+     ]}
+};
+
+let CFG={qTime:0,lockTime:10};
+let ADMIN_PW="abbis2026";
+let RESP=[];
+
+// ════════════════════════════════════════════════════════════════
+// ④ STATE & FLOW
+// ════════════════════════════════════════════════════════════════
+let S={mode:null,resp:{},answers:{C:[],D:[],E:{},F:{},G:{}},lockInt:null};
+let QFlow=[], QIdx=0;
+
+function goTo(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showEl(id){document.getElementById(id).classList.remove('hide');}
+function hideEl(id){document.getElementById(id).classList.add('hide');}
+function selMode(m){S.mode=m;goTo('s-info');}
+
+function startFlow(){
+  const n=document.getElementById('i-name').value.trim();
+  const k=document.getElementById('i-kelas').value.trim();
+  const ab=document.getElementById('i-absen').value.trim();
+  const g=document.getElementById('i-gender').value;
+  if(!n||!k||!ab||!g){alert('Harap isi semua data.');return;}
+  S.resp={name:n,kelas:k,absen:ab,gender:g,mode:S.mode};
+  S.answers={C:new Array(QC.length).fill(null),
+             D:new Array(QD.length).fill(null),E:{},F:{},G:{}};
+  if(S.mode==='digital'){
+    document.getElementById('art-title').textContent=ARTICLE.title;
+    document.getElementById('art-body').innerHTML=ARTICLE.body;
+    goTo('s-read');
+  } else {
+    goTo('s-print');
+  }
+}
+
+// ── Baca digital ──
+function showConfirmRead(){showEl('ov-confirm');}
+function finishRead(){hideEl('ov-confirm');buildFlow();goTo('s-q');renderQ();}
+
+// ── Kunci cetak ──
+function showPrintLock(){
+  showEl('ov-lock');
+  const btn=document.getElementById('btn-unlock');
+  btn.disabled=true;
+  let t=CFG.lockTime;
+  const disp=document.getElementById('lock-timer');
+  disp.textContent=fmt(t);
+  S.lockInt=setInterval(()=>{
+    t--;
+    disp.textContent=fmt(t);
+    if(t<=0){clearInterval(S.lockInt);btn.disabled=false;disp.textContent='✅ Siap!';}
+  },1000);
+}
+function unlockPrint(){
+  hideEl('ov-lock');
+  buildFlow();goTo('s-q');renderQ();
+}
+
+function fmt(s){
+  return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// ⑤ FLOW ENGINE SOAL
+// ════════════════════════════════════════════════════════════════
+function buildFlow(){
+  QFlow=[];
+  QFlow.push({type:'hdr',label:'Bagian C — Tes Pemahaman Membaca',
+    desc:'Jawab TANPA membuka kembali teks. Pilih satu jawaban yang paling tepat. [Britt et al., 2018]'});
+  QFlow.push({type:'hdr',label:'C.1 — Pemahaman Harfiah (Surface Code)',
+    desc:'Mengukur kemampuan memahami informasi yang tersurat secara langsung.',mini:true});
+  for(let i=0;i<5;i++) QFlow.push({type:'pg',sec:'C',idx:i});
+  QFlow.push({type:'hdr',label:'C.2 — Pemahaman Ide Pokok (Textbase)',
+    desc:'Mengukur kemampuan mengidentifikasi gagasan utama dan hubungan antar paragraf.',mini:true});
+  for(let i=5;i<10;i++) QFlow.push({type:'pg',sec:'C',idx:i});
+  QFlow.push({type:'hdr',label:'C.3 — Pemahaman Inferensial (Situation Model)',
+    desc:'Mengukur kemampuan menarik kesimpulan dan mengaitkan isi teks dengan logika sebab-akibat.',mini:true});
+  for(let i=10;i<15;i++) QFlow.push({type:'pg',sec:'C',idx:i});
+  QFlow.push({type:'hdr',label:'Bagian D — Rekonstruksi Urutan & Memori Lokasi',
+    desc:'Jawab tanpa membuka teks. Teks terdiri dari 9 paragraf. [Singer & Alexander, 2017]'});
+  for(let i=0;i<QD.length;i++) QFlow.push({type:'pg',sec:'D',idx:i});
+  QFlow.push({type:'lik',sec:'E'});
+  QFlow.push({type:'lik',sec:'F'});
+  QFlow.push({type:'lik',sec:'G'});
+  QIdx=0;
+}
+
+let qTInt=null;
+function renderQ(){
+  const p=QFlow[QIdx];
+  const tot=QFlow.length;
+  document.getElementById('q-prog').style.width=`${((QIdx+1)/tot)*100}%`;
+  document.getElementById('q-step').textContent=`${QIdx+1}/${tot}`;
+  const wrap=document.getElementById('q-wrap');
+  wrap.innerHTML='';
+
+  if(p.type==='hdr'){
+    hideEl('q-timer'); clearQT();
+    wrap.innerHTML=`
+      <div style="display:flex;flex-direction:column;align-items:center;
+        justify-content:center;min-height:60vh;text-align:center;">
+        <div style="max-width:520px;width:100%;">
+          <div class="sec-hdr" style="text-align:left;">
+            <div class="sh-tag">${p.mini?'Sub-Bagian':'Bagian Baru'}</div>
+            <h3>${p.label}</h3><p>${p.desc}</p>
+          </div>
+          <div style="display:flex;gap:.75rem;justify-content:center;margin-top:1rem;">
+            ${QIdx>0?`<button class="bn" onclick="prevQ()">← Kembali</button>`:''}
+            <button class="btn b-blue" onclick="nextQ()">Lanjut →</button>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('q-sec-lbl').textContent=p.label.split('—')[0].trim();
+    return;
+  }
+
+  if(p.type==='pg'){
+    const sec=p.sec, idx=p.idx;
+    const q=sec==='C'?QC[idx]:QD[idx];
+    const A=S.answers[sec];
+    const ks=['A','B','C','D'];
+    document.getElementById('q-sec-lbl').textContent=sec==='C'?q.sec:'Bagian D';
+    if(CFG.qTime>0){showEl('q-timer');startQT();}
+    else{hideEl('q-timer');clearQT();}
+    const opts=q.opts.map((o,j)=>`
+      <div class="opt${A[idx]===j?' sel':''}" onclick="selAns('${sec}',${idx},${j})">
+        <span class="okey">${ks[j]}</span><span>${o}</span>
+      </div>`).join('');
+    const last=QIdx===QFlow.length-1;
+    wrap.innerHTML=`
+      <div class="qlbl">${sec==='C'?`${q.sec} · Soal ${idx+1}`:`Bagian D · Soal ${idx+1}`}</div>
+      <div class="qtxt">${q.q}</div>
+      <div class="opts">${opts}</div>
+      <div class="qnav">
+        <button class="bn" onclick="prevQ()">← Kembali</button>
+        ${last
+          ?`<button class="bs" id="btn-submit" onclick="doSubmit()">Kirim Instrumen ✓</button>`
+          :`<button class="bn" onclick="nextQ()">Selanjutnya →</button>`}
+      </div>`;
+    return;
+  }
+
+  if(p.type==='lik'){
+    const sec=p.sec, L=LIKERT[sec];
+    hideEl('q-timer'); clearQT();
+    document.getElementById('q-sec-lbl').textContent=sec;
+    const rows=L.items.map((item,i)=>{
+      const cur=S.answers[sec][i]||null;
+      const rads=[1,2,3,4,5].map(v=>
+        `<td><input type="radio" class="lrad" name="lik-${sec}-${i}"
+          value="${v}" ${cur===v?'checked':''}
+          onchange="S.answers['${sec}'][${i}]=parseInt(this.value)"></td>`
+      ).join('');
+      return `<tr><td>${item.t}${item.r?`<span class="rtag">R</span>`:''}</td>${rads}</tr>`;
+    }).join('');
+    const isLast=QIdx===QFlow.length-1;
+    wrap.innerHTML=`
+      <div class="sec-hdr">
+        <div class="sh-tag">Skala Likert · ${sec}</div>
+        <h3>${L.title}</h3>
+        <p>${L.desc}</p>
+        <p style="margin-top:.3rem;font-size:.7rem;color:var(--t3);">Dasar teori: ${L.theory}</p>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ltable">
+          <thead><tr>
+            <th>Pernyataan</th>
+            <th>1<br><small>STS</small></th>
+            <th>2<br><small>TS</small></th>
+            <th>3<br><small>N</small></th>
+            <th>4<br><small>S</small></th>
+            <th>5<br><small>SS</small></th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <p style="font-size:.7rem;color:var(--t3);margin-bottom:1rem;">
+        STS=Sangat Tidak Setuju · SS=Sangat Setuju · <strong>R=Skor dibalik saat analisis</strong></p>
+      <div class="qnav">
+        <button class="bn" onclick="prevQ()">← Kembali</button>
+        ${isLast
+          ?`<button class="bs" onclick="doSubmit()">Kirim Instrumen ✓</button>`
+          :`<button class="bn" onclick="nextQ()">Selanjutnya →</button>`}
+      </div>`;
+  }
+}
+
+function selAns(sec,idx,val){S.answers[sec][idx]=val;renderQ();}
+function nextQ(){clearQT();if(QIdx<QFlow.length-1){QIdx++;renderQ();}}
+function prevQ(){clearQT();if(QIdx>0){QIdx--;renderQ();}}
+
+function startQT(){
+  clearQT();
+  let t=CFG.qTime;
+  const d=document.getElementById('q-timer');
+  d.textContent=fmt(t); d.classList.remove('urg');
+  qTInt=setInterval(()=>{
+    t--;
+    d.textContent=fmt(t);
+    if(t<=10) d.classList.add('urg');
+    if(t<=0){clearQT();QIdx<QFlow.length-1?(QIdx++,renderQ()):doSubmit();}
+  },1000);
+}
+function clearQT(){clearInterval(qTInt);}
+
+// ════════════════════════════════════════════════════════════════
+// ⑥ SUBMIT → SUPABASE
+// ════════════════════════════════════════════════════════════════
+function calcSc(ans,qs){return ans.reduce((a,v,i)=>a+(v===qs[i].ans?1:0),0);}
+function calcLik(sec){
+  return LIKERT[sec].items.reduce((sum,item,i)=>{
+    const raw=S.answers[sec][i]||0;
+    return sum+(item.r?(6-raw):raw);
+  },0);
+}
+
+async function doSubmit(){
+  clearQT();
+  const c1=calcSc(S.answers.C.slice(0,5),QC.slice(0,5));
+  const c2=calcSc(S.answers.C.slice(5,10),QC.slice(5,10));
+  const c3=calcSc(S.answers.C.slice(10,15),QC.slice(10,15));
+  const tC=c1+c2+c3, tD=calcSc(S.answers.D,QD);
+  const tE=calcLik('E'), tF=calcLik('F'), tG=calcLik('G');
+
+  const payload={
+    nama:S.resp.name, kelas:S.resp.kelas, absen:S.resp.absen,
+    gender:S.resp.gender, mode:S.resp.mode,
+    score_c1:c1, score_c2:c2, score_c3:c3, score_c:tC,
+    score_d:tD, score_e:tE, score_f:tF, score_g:tG,
+    raw_c:S.answers.C, raw_d:S.answers.D,
+    raw_e:S.answers.E, raw_f:S.answers.F, raw_g:S.answers.G
+  };
+
+  // Kirim ke Supabase
+  try{
+    await sb('responses',{method:'POST',prefer:'return=minimal',body:JSON.stringify(payload)});
+  }catch(err){
+    console.warn('Gagal kirim ke Supabase:',err.message);
+  }
+
+  // Tampilkan hasil
+  const v=tC>=12?'Pemahaman Sangat Baik':tC>=9?'Pemahaman Baik':tC>=6?'Pemahaman Cukup':'Perlu Peningkatan';
+  document.getElementById('r-head').textContent=v;
+  document.getElementById('r-score').textContent=tC;
+  document.getElementById('r-verd').textContent=v;
+  document.getElementById('r-name').textContent=S.resp.name;
+  document.getElementById('r-kls').textContent=`${S.resp.kelas} / ${S.resp.absen}`;
+  document.getElementById('r-mode').textContent=S.resp.mode==='digital'?'Digital':'Cetak';
+  document.getElementById('r-d').textContent=`${tD}/8`;
+  goTo('s-result');
+}
+
+function restart(){
+  clearQT();
+  S={mode:null,resp:{},answers:{C:[],D:[],E:{},F:{},G:{}},lockInt:null};
+  ['i-name','i-kelas','i-absen'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('i-gender').value='';
+  goTo('s-land');
+}
+
+// ════════════════════════════════════════════════════════════════
+// ⑦ ADMIN
+// ════════════════════════════════════════════════════════════════
+function doLogin(){
+  const pw=document.getElementById('a-pw').value;
+  const err=document.getElementById('log-err');
+  if(pw===ADMIN_PW){
+    err.classList.add('hide');
+    document.getElementById('a-pw').value='';
+    initAdmin(); goTo('s-adm');
+  }else{ err.classList.remove('hide'); }
+}
+
+function swTab(id){
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.sb').forEach(b=>b.classList.remove('on'));
+  const map={
+    't-resp':'sb-resp','t-art':'sb-art','t-qc':'sb-qc',
+    't-qd':'sb-qd','t-lik':'sb-lik','t-set':'sb-set','t-exp':'sb-exp'
+  };
+  if(map[id]) document.getElementById(map[id]).classList.add('on');
+  if(id==='t-resp') loadResp();
+}
+
+function initAdmin(){
+  document.getElementById('ed-title').value=ARTICLE.title;
+  document.getElementById('ed-body').value=ARTICLE.body;
+  document.getElementById('set-qt').value=CFG.qTime;
+  document.getElementById('set-lt').value=CFG.lockTime;
+  buildQCEd(); buildQDEd(); buildLikEd();
+  loadResp();
+}
+
+// ── Load Respons dari Supabase ──
+async function loadResp(){
+  const tbody=document.getElementById('rtbody');
+  const noR=document.getElementById('no-resp');
+  tbody.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:2rem;
+    color:var(--t3);font-family:var(--mono);">⏳ Memuat data...</td></tr>`;
+  noR.style.display='none';
+  try{
+    const data=await sb('responses?select=*&order=created_at.desc',{method:'GET'},true);
+    if(!data||!data.length){tbody.innerHTML='';noR.style.display='block';return;}
+    RESP=data.map(r=>({
+      _id:r.id, name:r.nama, kelas:r.kelas, absen:r.absen,
+      gender:r.gender, mode:r.mode,
+      ts:r.created_at,
+      scoreC1:r.score_c1, scoreC2:r.score_c2, scoreC3:r.score_c3,
+      scoreC:r.score_c, scoreD:r.score_d,
+      scoreE:r.score_e, scoreF:r.score_f, scoreG:r.score_g,
+      rawC:r.raw_c, rawD:r.raw_d,
+      rawE:r.raw_e, rawF:r.raw_f, rawG:r.raw_g
+    }));
+    tbody.innerHTML='';
+    RESP.forEach((r,i)=>{
+      const tgl=new Date(r.ts).toLocaleDateString('id-ID',
+        {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td>${i+1}</td>
+        <td><strong>${r.name}</strong><br>
+          <span style="font-size:.68rem;color:var(--t3);font-family:var(--mono);">${tgl}</span></td>
+        <td>${r.kelas}/${r.absen}</td>
+        <td><span class="bmode b${r.mode==='digital'?'dig':'prt'}">${r.mode}</span></td>
+        <td>${r.scoreC1}/5</td><td>${r.scoreC2}/5</td><td>${r.scoreC3}/5</td>
+        <td>${r.scoreD}/8</td>
+        <td><strong style="color:var(--bl);">${r.scoreC}/15</strong></td>
+        <td>${r.scoreE}</td><td>${r.scoreF}</td><td>${r.scoreG}</td>
+        <td style="display:flex;gap:.35rem;">
+          <button class="dbtn" onclick="showDetail(${i})">Detail</button>
+          <button class="dbtn" style="color:var(--rd);border-color:var(--rd);"
+            onclick="delResp(${i})">Hapus</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }catch(err){
+    tbody.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:2rem;
+      color:var(--rd);font-size:.8rem;">
+      ❌ Gagal memuat: ${err.message}<br>
+      <small style="color:var(--t3);">Pastikan SB_URL dan SB_SVC sudah diisi.</small>
+      </td></tr>`;
+  }
+}
+
+// ── Hapus Responden ──
+async function delResp(i){
+  const r=RESP[i];
+  const pw=prompt(`Password admin untuk menghapus data "${r.name}":`);
+  if(!pw) return;
+  if(pw!==ADMIN_PW){alert('❌ Password salah.');return;}
+  try{
+    await sb(`responses?id=eq.${r._id}`,{method:'DELETE',prefer:'return=minimal'},true);
+    alert(`✅ Data "${r.name}" berhasil dihapus.`);
+    loadResp();
+  }catch(err){alert(`❌ Gagal: ${err.message}`);}
+}
+
+// ── Hapus Semua ──
+async function clearAll(){
+  const pw=prompt('Password admin untuk MENGHAPUS SEMUA DATA:');
+  if(!pw) return;
+  if(pw!==ADMIN_PW){alert('❌ Password salah.');return;}
+  if(!confirm('Yakin menghapus SEMUA data? Tidak bisa dibatalkan!')) return;
+  try{
+    await sb('responses?id=neq.00000000-0000-0000-0000-000000000000',
+      {method:'DELETE',prefer:'return=minimal'},true);
+    alert('✅ Semua data berhasil dihapus.');
+    loadResp();
+  }catch(err){alert(`❌ Gagal: ${err.message}`);}
+}
+
+// ── Download CSV ──
+function dlCSV(){
+  if(!RESP.length){alert('Belum ada data.');return;}
+  const h=['Nama','Kelas','Absen','Gender','Media','Waktu',
+           'C1','C2','C3','TotalC','D','E','F','G'];
+  const rows=RESP.map(r=>[r.name,r.kelas,r.absen,r.gender,r.mode,
+    new Date(r.ts).toLocaleString('id-ID'),
+    r.scoreC1,r.scoreC2,r.scoreC3,r.scoreC,r.scoreD,r.scoreE,r.scoreF,r.scoreG]);
+  const csv=[h,...rows].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`abbis-data-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ── Detail Modal ──
+function showDetail(i){
+  const r=RESP[i];
+  const ks=['A','B','C','D'];
+  const pgR=(sec,qs,raw)=>qs.map((q,j)=>{
+    const ok=Array.isArray(raw)&&raw[j]===q.ans;
+    return `<tr style="font-size:.76rem;">
+      <td style="padding:.35rem .6rem;border-bottom:1px solid var(--bd);">
+        ${sec}${j+1}</td>
+      <td style="padding:.35rem .6rem;border-bottom:1px solid var(--bd);">
+        ${ok?'✅':'❌'}
+        ${Array.isArray(raw)&&raw[j]!=null?ks[raw[j]]:'—'}
+        ${!ok&&Array.isArray(raw)?'→ '+ks[q.ans]:''}
+      </td></tr>`;
+  }).join('');
+
+  const likR=(sec)=>LIKERT[sec].items.map((item,i)=>{
+    const raw=(r['raw'+sec]&&r['raw'+sec][i])||'—';
+    const sc=raw!=='—'?(item.r?(6-raw):raw):'—';
+    return `<div class="lrow">
+      <span style="flex:1;font-size:.76rem;">${i+1}. ${item.t.slice(0,55)}…
+        ${item.r?'<span class="rtag">R</span>':''}</span>
+      <span class="lsc">${raw}→${sc}</span></div>`;
+  }).join('');
+
+  document.getElementById('modal-cnt').innerHTML=`
+    <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:.3rem;">
+      Detail: ${r.name}</h3>
+    <p style="font-size:.75rem;color:var(--t2);margin-bottom:1rem;">
+      ${r.kelas}/${r.absen} · ${r.gender} · ${r.mode} ·
+      ${new Date(r.ts).toLocaleString('id-ID')}</p>
+    <div class="sbrkd">
+      <div class="sbi"><div class="sbl">C.1 Surface</div><div class="sbv">${r.scoreC1}/5</div></div>
+      <div class="sbi"><div class="sbl">C.2 Textbase</div><div class="sbv">${r.scoreC2}/5</div></div>
+      <div class="sbi"><div class="sbl">C.3 Situation</div><div class="sbv">${r.scoreC3}/5</div></div>
+      <div class="sbi"><div class="sbl">Total C</div>
+        <div class="sbv" style="color:var(--bl);">${r.scoreC}/15</div></div>
+      <div class="sbi"><div class="sbl">Bagian D</div><div class="sbv">${r.scoreD}/8</div></div>
+      <div class="sbi"><div class="sbl">Bagian E</div><div class="sbv">${r.scoreE}</div></div>
+      <div class="sbi"><div class="sbl">Bagian F</div><div class="sbv">${r.scoreF}</div></div>
+      <div class="sbi"><div class="sbl">Bagian G</div><div class="sbv">${r.scoreG}</div></div>
+    </div>
+    <h4 style="font-size:.82rem;font-weight:600;margin-bottom:.5rem;">Jawaban C & D</h4>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:1rem;">
+      ${pgR('C',QC,r.rawC)}${pgR('D',QD,r.rawD)}</table>
+    <div>
+      <h4 style="font-size:.82rem;font-weight:600;margin:.6rem 0 .3rem;">Skala E</h4>${likR('E')}
+      <h4 style="font-size:.82rem;font-weight:600;margin:.6rem 0 .3rem;">Skala F</h4>${likR('F')}
+      <h4 style="font-size:.82rem;font-weight:600;margin:.6rem 0 .3rem;">Skala G</h4>${likR('G')}
+    </div>`;
+  showEl('modal');
+}
+
+// ── Editor Soal C ──
+function buildQCEd(){
+  const el=document.getElementById('qc-list');el.innerHTML='';
+  QC.forEach((q,i)=>{
+    const item=document.createElement('div');item.className='qed';
+    const oR=q.opts.map((o,j)=>`
+      <div class="arow${j===q.ans?' cor':''}" id="qcar-${i}-${j}">
+        <input type="radio" name="qca-${i}" value="${j}"
+          ${j===q.ans?'checked':''} onchange="qcMark(${i},${j})">
+        <span class="albl">${['A','B','C','D'][j]}</span>
+        <input type="text" value="${o}" id="qco-${i}-${j}">
+      </div>`).join('');
+    item.innerHTML=`
+      <div class="qedh" onclick="togEd('qcb-${i}','qcc-${i}')">
+        <span class="qn">${q.sec}·Q${i+1}</span>
+        <span class="qpv" id="qcp-${i}">${q.q.slice(0,55)}…</span>
+        <span id="qcc-${i}" style="color:var(--t3);font-size:.75rem;transition:transform .2s;">▼</span>
+      </div>
+      <div class="qedb" id="qcb-${i}">
+        <div class="fld"><label>Teks Soal</label>
+          <textarea rows="2" id="qct-${i}"
+            oninput="document.getElementById('qcp-${i}').textContent=this.value.slice(0,55)+'…'"
+          >${q.q}</textarea></div>
+        <div class="fld"><label>Pilihan (● = jawaban benar)</label>${oR}</div>
+        <div class="fld"><label>Sub-Bagian</label>
+          <select id="qcs-${i}">
+            <option value="C.1" ${q.sec==='C.1'?'selected':''}>C.1 Surface</option>
+            <option value="C.2" ${q.sec==='C.2'?'selected':''}>C.2 Textbase</option>
+            <option value="C.3" ${q.sec==='C.3'?'selected':''}>C.3 Situation Model</option>
+          </select></div>
+      </div>`;
+    el.appendChild(item);
+  });
+}
+function qcMark(qi,ai){
+  for(let j=0;j<4;j++){
+    const el=document.getElementById(`qcar-${qi}-${j}`);
+    if(el) el.classList.toggle('cor',j===ai);
+  }
+}
+function saveQC(){
+  for(let i=0;i<QC.length;i++){
+    QC[i].q=document.getElementById(`qct-${i}`).value.trim();
+    QC[i].sec=document.getElementById(`qcs-${i}`).value;
+    for(let j=0;j<4;j++) QC[i].opts[j]=document.getElementById(`qco-${i}-${j}`).value.trim();
+    document.querySelectorAll(`input[name="qca-${i}"]`).forEach(r=>{
+      if(r.checked) QC[i].ans=parseInt(r.value);});
+  }
+  showSt('qc-st','✅ Soal C disimpan.','ok');
+}
+
+// ── Editor Soal D ──
+function buildQDEd(){
+  const el=document.getElementById('qd-list');el.innerHTML='';
+  QD.forEach((q,i)=>{
+    const item=document.createElement('div');item.className='qed';
+    const oR=q.opts.map((o,j)=>`
+      <div class="arow${j===q.ans?' cor':''}" id="qdar-${i}-${j}">
+        <input type="radio" name="qda-${i}" value="${j}"
+          ${j===q.ans?'checked':''} onchange="qdMark(${i},${j})">
+        <span class="albl">${['A','B','C','D'][j]}</span>
+        <input type="text" value="${o}" id="qdo-${i}-${j}">
+      </div>`).join('');
+    item.innerHTML=`
+      <div class="qedh" onclick="togEd('qdb-${i}','qdc-${i}')">
+        <span class="qn">D·Q${i+1}</span>
+        <span class="qpv" id="qdp-${i}">${q.q.slice(0,55)}…</span>
+        <span id="qdc-${i}" style="color:var(--t3);font-size:.75rem;">▼</span>
+      </div>
+      <div class="qedb" id="qdb-${i}">
+        <div class="fld"><label>Teks Soal</label>
+          <textarea rows="2" id="qdt-${i}"
+            oninput="document.getElementById('qdp-${i}').textContent=this.value.slice(0,55)+'…'"
+          >${q.q}</textarea></div>
+        <div class="fld"><label>Pilihan & Jawaban Benar</label>${oR}</div>
+      </div>`;
+    el.appendChild(item);
+  });
+}
+function qdMark(qi,ai){
+  for(let j=0;j<4;j++){
+    const el=document.getElementById(`qdar-${qi}-${j}`);
+    if(el) el.classList.toggle('cor',j===ai);
+  }
+}
+function saveQD(){
+  for(let i=0;i<QD.length;i++){
+    QD[i].q=document.getElementById(`qdt-${i}`).value.trim();
+    for(let j=0;j<4;j++) QD[i].opts[j]=document.getElementById(`qdo-${i}-${j}`).value.trim();
+    document.querySelectorAll(`input[name="qda-${i}"]`).forEach(r=>{
+      if(r.checked) QD[i].ans=parseInt(r.value);});
+  }
+  showSt('qd-st','✅ Soal D disimpan.','ok');
+}
+
+// ── Editor Likert ──
+function buildLikEd(){
+  const el=document.getElementById('lik-ed');el.innerHTML='';
+  ['E','F','G'].forEach(sec=>{
+    const L=LIKERT[sec];
+    const wrap=document.createElement('div');
+    wrap.className='qed';wrap.style.marginBottom='1rem';
+    const items=L.items.map((item,i)=>`
+      <div class="led">
+        <div class="ledn">${i+1}</div>
+        <div class="ledf">
+          <input type="text" value="${item.t}" id="lit-${sec}-${i}">
+          <div class="ledm">
+            <label><input type="checkbox" ${item.r?'checked':''}
+              id="lir-${sec}-${i}"> Reverse-scored (R)</label>
+          </div>
+        </div>
+      </div>`).join('');
+    wrap.innerHTML=`
+      <div class="qedh" onclick="togEd('lib-${sec}','lic-${sec}')">
+        <span class="qn">${sec}</span>
+        <span class="qpv">${L.title}</span>
+        <span id="lic-${sec}" style="color:var(--t3);font-size:.75rem;">▼</span>
+      </div>
+      <div class="qedb" id="lib-${sec}">
+        <div class="fld"><label>Judul</label>
+          <input type="text" value="${L.title}" id="lit2-${sec}"></div>
+        <div class="fld"><label>Deskripsi</label>
+          <input type="text" value="${L.desc}" id="lid-${sec}"></div>
+        <div style="margin-top:.5rem;">${items}</div>
+      </div>`;
+    el.appendChild(wrap);
+  });
+}
+function saveLik(){
+  ['E','F','G'].forEach(sec=>{
+    LIKERT[sec].title=document.getElementById(`lit2-${sec}`).value;
+    LIKERT[sec].desc=document.getElementById(`lid-${sec}`).value;
+    LIKERT[sec].items.forEach((item,i)=>{
+      item.t=document.getElementById(`lit-${sec}-${i}`).value;
+      item.r=document.getElementById(`lir-${sec}-${i}`).checked;
+    });
+  });
+  showSt('lik-st','✅ Skala disimpan.','ok');
+}
+
+// ── Artikel ──
+function saveArt(){
+  ARTICLE.title=document.getElementById('ed-title').value.trim();
+  ARTICLE.body=document.getElementById('ed-body').value;
+  showSt('art-st','✅ Teks disimpan.','ok');
+}
+
+// ── Settings ──
+function saveCFG(){
+  const qt=parseInt(document.getElementById('set-qt').value)||0;
+  const lt=parseInt(document.getElementById('set-lt').value)||10;
+  if(lt<5){showSt('set-st','❌ Waktu kunci min. 5 detik.','err');return;}
+  CFG.qTime=qt;CFG.lockTime=lt;
+  showSt('set-st','✅ Pengaturan disimpan.','ok');
+}
+function changePw(){
+  const o=document.getElementById('pw-o').value;
+  const n=document.getElementById('pw-n').value;
+  const c=document.getElementById('pw-c').value;
+  if(o!==ADMIN_PW){showSt('pw-st','❌ Password lama salah.','err');return;}
+  if(n.length<6){showSt('pw-st','❌ Min. 6 karakter.','err');return;}
+  if(n!==c){showSt('pw-st','❌ Konfirmasi tidak cocok.','err');return;}
+  ADMIN_PW=n;
+  ['pw-o','pw-n','pw-c'].forEach(id=>document.getElementById(id).value='');
+  showSt('pw-st','✅ Password berhasil diubah.','ok');
+}
+
+// ── Export/Import ──
+function getCfg(){return{article:ARTICLE,questionsC:QC,questionsD:QD,likert:LIKERT,config:CFG};}
+function genExp(){document.getElementById('exp-pre').textContent=JSON.stringify(getCfg(),null,2);}
+function dlCfg(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(getCfg(),null,2)],{type:'application/json'}));
+  a.download=`abbis-config-${new Date().toISOString().slice(0,10)}.json`;a.click();
+  showSt('exp-st','✅ Config diunduh.','ok');
+}
+function cpyCfg(){
+  navigator.clipboard.writeText(JSON.stringify(getCfg(),null,2))
+    .then(()=>showSt('exp-st','✅ Disalin!','ok'))
+    .catch(()=>showSt('exp-st','❌ Gagal.','err'));
+}
+function impCfg(){
+  try{
+    const d=JSON.parse(document.getElementById('imp-json').value.trim());
+    if(d.article) ARTICLE=d.article;
+    if(d.questionsC) QC=d.questionsC;
+    if(d.questionsD) QD=d.questionsD;
+    if(d.likert) LIKERT=d.likert;
+    if(d.config) CFG=d.config;
+    initAdmin();
+    document.getElementById('imp-json').value='';
+    showSt('imp-st','✅ Berhasil diimpor.','ok');
+  }catch(e){showSt('imp-st','❌ Format JSON tidak valid.','err');}
+}
+
+// ── Helpers ──
+function togEd(bid,cid){
+  const b=document.getElementById(bid);b.classList.toggle('on');
+  const c=document.getElementById(cid);
+  c.style.transform=b.classList.contains('on')?'rotate(180deg)':'';
+}
+function showSt(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className=`stmsg st-${type}`;
+  el.classList.remove('hide');
+  setTimeout(()=>el.classList.add('hide'),3500);
+}
+</script>
+</body>
+</html>
